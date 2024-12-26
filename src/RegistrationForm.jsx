@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { TextField, FormControl, InputLabel, MenuItem, Select, Button, FormHelperText, Stack, Typography } from '@mui/material';
+import { TextField, FormControl, InputLabel, MenuItem, Select, Button, FormHelperText, Stack } from '@mui/material';
 import './RegistrationForm.css';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: '',
+    address: '',
+    mobile: '',
+    email: '',
     gender: '',
     dob: '',
     course: '',
@@ -12,6 +15,9 @@ const RegistrationForm = () => {
 
   const [errors, setErrors] = useState({
     name: '',
+    address: '',
+    mobile: '',
+    email: '',
     gender: '',
     dob: '',
     course: '',
@@ -29,19 +35,43 @@ const RegistrationForm = () => {
     let formErrors = {};
     let isValid = true;
 
-    // Name validation (non-empty)
+    // Name validation
     if (!formData.name) {
       formErrors.name = 'Name is required';
       isValid = false;
     }
 
-    // Gender validation (non-empty)
+    // Address validation
+    if (!formData.address) {
+      formErrors.address = 'Address is required';
+      isValid = false;
+    }
+
+    // Mobile number validation (non-empty, numeric, 10 digits)
+    if (!formData.mobile) {
+      formErrors.mobile = 'Mobile number is required';
+      isValid = false;
+    } else if (!/^\d{10}$/.test(formData.mobile)) {
+      formErrors.mobile = 'Mobile number must be 10 digits';
+      isValid = false;
+    }
+
+    // Email validation (non-empty and valid format)
+    if (!formData.email) {
+      formErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      formErrors.email = 'Invalid email format';
+      isValid = false;
+    }
+
+    // Gender validation
     if (!formData.gender) {
       formErrors.gender = 'Gender is required';
       isValid = false;
     }
 
-    // Date of Birth validation (non-empty and not in the future)
+    // Date of Birth validation
     if (!formData.dob) {
       formErrors.dob = 'Date of Birth is required';
       isValid = false;
@@ -50,7 +80,7 @@ const RegistrationForm = () => {
       isValid = false;
     }
 
-    // Course validation (non-empty)
+    // Course validation
     if (!formData.course) {
       formErrors.course = 'Course is required';
       isValid = false;
@@ -64,27 +94,32 @@ const RegistrationForm = () => {
     event.preventDefault();
 
     if (validateForm()) {
-      // Create the success alert message with user data
       const successMessage = `
         Data stored successfully! 
         \nName: ${formData.name}
+        \nAddress: ${formData.address}
+        \nMobile: ${formData.mobile}
+        \nEmail: ${formData.email}
         \nGender: ${formData.gender}
         \nDate of Birth: ${formData.dob}
         \nCourse: ${formData.course}
       `;
-      
-      // Display the alert with the user data
       alert(successMessage);
-      
-      // Reset the form
+
       setFormData({
         name: '',
+        address: '',
+        mobile: '',
+        email: '',
         gender: '',
         dob: '',
         course: '',
       });
       setErrors({
         name: '',
+        address: '',
+        mobile: '',
+        email: '',
         gender: '',
         dob: '',
         course: '',
@@ -97,12 +132,18 @@ const RegistrationForm = () => {
   const handleReset = () => {
     setFormData({
       name: '',
+      address: '',
+      mobile: '',
+      email: '',
       gender: '',
       dob: '',
       course: '',
     });
     setErrors({
       name: '',
+      address: '',
+      mobile: '',
+      email: '',
       gender: '',
       dob: '',
       course: '',
@@ -124,12 +165,50 @@ const RegistrationForm = () => {
           onChange={handleChange}
           error={!!errors.name}
           helperText={errors.name}
-          className="form-input"
+          sx={{ mb: 2 }}
+        />
+
+        {/* Address Field */}
+        <TextField
+          name="address"
+          label="Address"
+          variant="outlined"
+          fullWidth
+          value={formData.address}
+          onChange={handleChange}
+          error={!!errors.address}
+          helperText={errors.address}
+          sx={{ mb: 2 }}
+        />
+
+        {/* Mobile Field */}
+        <TextField
+          name="mobile"
+          label="Mobile"
+          variant="outlined"
+          fullWidth
+          value={formData.mobile}
+          onChange={handleChange}
+          error={!!errors.mobile}
+          helperText={errors.mobile}
+          sx={{ mb: 2 }}
+        />
+
+        {/* Email Field */}
+        <TextField
+          name="email"
+          label="Email"
+          variant="outlined"
+          fullWidth
+          value={formData.email}
+          onChange={handleChange}
+          error={!!errors.email}
+          helperText={errors.email}
           sx={{ mb: 2 }}
         />
 
         {/* Gender Dropdown */}
-        <FormControl fullWidth className="form-input" error={!!errors.gender} sx={{ mb: 2 }}>
+        <FormControl fullWidth error={!!errors.gender} sx={{ mb: 2 }}>
           <InputLabel>Gender</InputLabel>
           <Select
             name="gender"
@@ -149,19 +228,17 @@ const RegistrationForm = () => {
           name="dob"
           label="Date of Birth"
           type="date"
-          variant="outlined"
           fullWidth
           InputLabelProps={{ shrink: true }}
           value={formData.dob}
           onChange={handleChange}
           error={!!errors.dob}
           helperText={errors.dob}
-          className="form-input"
           sx={{ mb: 2 }}
         />
 
         {/* Course Dropdown */}
-        <FormControl fullWidth className="form-input" error={!!errors.course} sx={{ mb: 2 }}>
+        <FormControl fullWidth error={!!errors.course} sx={{ mb: 2 }}>
           <InputLabel>Course</InputLabel>
           <Select
             name="course"
@@ -179,23 +256,10 @@ const RegistrationForm = () => {
 
         {/* Action Buttons */}
         <Stack direction="row" spacing={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullWidth
-            className="btn-register"
-          >
+          <Button variant="contained" color="primary" type="submit" fullWidth>
             Register
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            type="button"
-            fullWidth
-            onClick={handleReset}
-            className="btn-cancel"
-          >
+          <Button variant="outlined" color="secondary" type="button" fullWidth onClick={handleReset}>
             Cancel
           </Button>
         </Stack>
