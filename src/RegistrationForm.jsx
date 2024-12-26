@@ -47,7 +47,7 @@ const RegistrationForm = () => {
       isValid = false;
     }
 
-    // Mobile number validation (non-empty, numeric, 10 digits)
+    // Mobile number validation 
     if (!formData.mobile) {
       formErrors.mobile = 'Mobile number is required';
       isValid = false;
@@ -56,7 +56,7 @@ const RegistrationForm = () => {
       isValid = false;
     }
 
-    // Email validation (non-empty and valid format)
+    // Email validation 
     if (!formData.email) {
       formErrors.email = 'Email is required';
       isValid = false;
@@ -254,7 +254,7 @@ const RegistrationForm = () => {
           {errors.course && <FormHelperText>{errors.course}</FormHelperText>}
         </FormControl>
 
-        {/* Action Buttons */}
+       
         <Stack direction="row" spacing={2}>
           <Button variant="contained" color="primary" type="submit" fullWidth>
             Register
